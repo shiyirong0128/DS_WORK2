@@ -58,11 +58,19 @@ try {
   await call('Page.enable');
   await call('Network.enable');
   await call('Network.emulateNetworkConditions', { offline: true, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
-  const report = { stage: '02_文字与风格统一', offline: true, results: [] };
+  const report = { stage: '03_棋盘状态辨识', offline: true, results: [] };
   const expectedMap = ['#######', '# . . #', '# $ $ #', '#  .  #', '# $$$ #', '#.@.  #', '#######'];
   const expectedTiles = expectedMap.flatMap(row => [...row].map(c => ({ '#': 'wall', ' ': 'floor', '$': 'crate', '.': 'target', '@': 'player' }[c])));
 
-  for (const filename of ['index.html', 'complete.html']) {
+  const pages = [
+    { filename: 'index.html', placed: 0, playerOnTarget: 0, stats: '000,000', preview: '游戏主界面' },
+    { filename: 'partial.html', placed: 2, playerOnTarget: 1, stats: '011,002', preview: '部分完成' },
+    { filename: 'solved.html', placed: 5, playerOnTarget: 0, stats: '028,007', preview: '全部完成' },
+    { filename: 'complete.html', placed: 5, playerOnTarget: 0, stats: '028,007', preview: '通关页' },
+  ];
+  const targetCoordinates = [[1, 2], [1, 4], [3, 3], [5, 1], [5, 3]];
+  for (const page of pages) {
+    const { filename } = page;
     const source = fs.readFileSync(path.join(root, filename), 'utf8');
     if (/<script|https?:\/\//i.test(source)) throw new Error(`Unexpected runtime dependency: ${filename}`);
     await call('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false });
@@ -74,6 +82,14 @@ try {
     const content = await evaluate(`({
       title: document.title, text: document.body.innerText,
       tiles: [...document.querySelectorAll('.board .cell')].map(c => c.dataset.tile),
+      targetCoordinates: [...document.querySelectorAll('.board .cell[data-target="true"]')].map(c => [+c.dataset.r, +c.dataset.c]),
+      crates: document.querySelectorAll('.board .cell[data-occupant="crate"]').length,
+      players: document.querySelectorAll('.board .cell[data-occupant="player"]').length,
+      placedCrates: document.querySelectorAll('.board .has-crate.has-target').length,
+      placedMarks: document.querySelectorAll('.board .crate.is-placed .checkmark').length,
+      playerOnTarget: document.querySelectorAll('.board .has-player.has-target > .target').length,
+      totalLabel: document.querySelector('[data-total]').textContent,
+      placedLabel: document.querySelector('[data-placed]').textContent,
       stats: [...document.querySelectorAll('.stats strong')].map(c => c.textContent),
       consoles: document.querySelectorAll('.console').length,
       links: document.querySelectorAll('a,nav,select').length,
@@ -84,10 +100,17 @@ try {
     if (/方案|总览|风格切换|DESIGN|UI确认|风格确认|02\s*\/\s*10/i.test(content.text)) throw new Error('Proposal content remains');
     if (content.links || content.scripts || content.consoles !== 1 || !content.allButtonsDisabled) throw new Error(`Invalid static page: ${filename}`);
     if (filename === 'index.html' && (content.victory || JSON.stringify(content.tiles) !== JSON.stringify(expectedTiles) || content.stats.join() !== '000,000')) throw new Error('Main entry or map changed');
-    if (filename === 'complete.html' && (content.tiles.length || content.victory !== 1 || content.stats.join() !== '048,018')) throw new Error('Completion page invalid');
+    if (content.stats.join() !== page.stats || content.totalLabel !== '5' || +content.placedLabel !== page.placed) throw new Error(`Incorrect counters: ${filename}`);
+    if (filename === 'complete.html') {
+      if (content.tiles.length || content.victory !== 1) throw new Error('Completion page invalid');
+    } else {
+      if (content.tiles.length !== 49 || content.crates !== 5 || content.players !== 1 || content.victory) throw new Error(`Invalid board: ${filename}`);
+      if (JSON.stringify(content.targetCoordinates) !== JSON.stringify(targetCoordinates)) throw new Error(`Target layer changed: ${filename}`);
+      if (content.placedCrates !== page.placed || content.placedMarks !== page.placed || content.playerOnTarget !== page.playerOnTarget) throw new Error(`Composite state mismatch: ${filename}`);
+    }
     delete content.text;
     const screenshot = await call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true });
-    fs.writeFileSync(path.join(root, '预览图', filename === 'index.html' ? '游戏主界面.png' : '通关页.png'), Buffer.from(screenshot.data, 'base64'));
+    fs.writeFileSync(path.join(root, '预览图', page.preview + '.png'), Buffer.from(screenshot.data, 'base64'));
 
     const layouts = [];
     for (const [width, height] of [[320, 740], [390, 844], [768, 1024], [1440, 900]]) {

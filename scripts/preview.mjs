@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const routes = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/complete.html', 'complete.html']]);
+const routes = new Map([['/', 'index.html'], ...['index.html', 'partial.html', 'solved.html', 'complete.html'].map(file => [`/${file}`, file])]);
 http.createServer((request, response) => {
   const file = routes.get(new URL(request.url, 'http://localhost').pathname);
   if (!file) { response.writeHead(404).end(); return; }

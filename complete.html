@@ -78,7 +78,7 @@ svg { shape-rendering: crispEdges; }
 .stats > div { display: flex; flex: 1; justify-content: space-between; align-items: center; gap: 8px; }
 .stats span { font-size: 14px; white-space: nowrap; }
 .stats strong { font: 26px/1.5 "terminal", monospace; }
-.stats span, .legend, .win-title, .primary {
+.stats span, .legend, .win-title, .primary, .board-heading, .cargo-summary {
   font-family: var(--font-zh);
   font-weight: var(--label-weight);
   font-style: normal;
@@ -98,6 +98,16 @@ svg { shape-rendering: crispEdges; }
   image-rendering: pixelated;
 }
 .cell { position: relative; display: grid; place-items: center; min-width: 0; }
+.board-heading {
+  width: 336px;
+  max-width: 100%;
+  margin: 0 auto 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+.grid-size { font: 18px "terminal", monospace; }
 .wall {
   background: #65764a;
   border: 2px solid #435531;
@@ -109,6 +119,7 @@ svg { shape-rendering: crispEdges; }
 }
 .crate {
   position: absolute;
+  z-index: 1;
   inset: 5px;
   background: #7f8e4d;
   border: 3px solid var(--ink);
@@ -124,13 +135,45 @@ svg { shape-rendering: crispEdges; }
   background: var(--ink);
   transform: rotate(45deg);
 }
-.target { position: relative; width: 20px; height: 20px; border: 3px solid var(--dark-green); transform: rotate(45deg); }
+.target { position: absolute; width: 20px; height: 20px; border: 3px solid var(--dark-green); transform: rotate(45deg); }
 .target::after { content: ""; position: absolute; inset: 4px; background: var(--dark-green); }
-.person { width: 34px; height: 34px; position: relative; z-index: 1; }
-.legend { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 12px; font-size: 12px; }
+.person { width: 34px; height: 34px; position: relative; z-index: 2; }
+.crate.is-placed {
+  display: grid;
+  place-items: center;
+  background: var(--dark-green);
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 2px #9aab6c, 2px 3px #0003;
+  color: #edf2cb;
+}
+.crate.is-placed::before { display: none; }
+.checkmark { width: 76%; height: 76%; display: block; }
+.has-player.has-target { background-color: #c8d792; }
+.has-player.has-target .target {
+  width: 64%;
+  height: 64%;
+  border: 2px solid var(--ink);
+}
+.has-player.has-target .target::after { display: none; }
+.cargo-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  border-block: 1px solid #7f8e4d;
+  padding: 6px 0;
+  font-size: 12px;
+}
+.cargo-summary > div { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.cargo-summary > div + div { border-left: 1px solid #7f8e4d; }
+.cargo-summary strong { display: flex; align-items: baseline; font: 28px/1 "terminal", monospace; letter-spacing: 0; }
+.cargo-summary small { white-space: pre; font: 18px "terminal", monospace; }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-top: 10px; font-size: 12px; }
 .legend span { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 .mini-box { width: 12px; height: 12px; border: 2px solid var(--ink); background: #7f8e4d; }
 .mini-goal { width: 10px; height: 10px; border: 2px solid var(--dark-green); transform: rotate(45deg); }
+.mini-placed { width: 14px; height: 14px; display: grid; place-items: center; border: 1px solid var(--ink); background: var(--dark-green); color: #edf2cb; }
 .console-bottom { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 22px 15px 0; }
 .dpad { display: grid; grid-template-columns: repeat(3, 36px); grid-template-rows: repeat(3, 30px); }
 .dpad button {
@@ -166,6 +209,7 @@ svg { shape-rendering: crispEdges; }
 .trophy { display: block; width: 70px; height: 70px; margin: 12px auto; color: var(--dark-green); }
 .win-title { font-size: 26px; line-height: 1.5; }
 .stars { color: var(--dark-green); font-size: 23px; letter-spacing: 14px; padding-left: 14px; margin-top: 10px; }
+.victory .cargo-summary { margin-top: 18px; }
 .win-stats { margin: 18px 0; padding: 13px 0; border-block: 2px solid var(--dark-green); gap: 0; }
 .win-stats > div { flex-direction: column; gap: 0; }
 .win-stats > div + div { border-left: 2px solid var(--dark-green); }
@@ -203,11 +247,13 @@ svg { shape-rendering: crispEdges; }
   .actions { gap: 12px; }
   .actions button { width: 46px; height: 46px; }
   .win-stats strong { font-size: 38px; }
+  .cargo-summary { font-size: 11px; gap: 8px; }
+  .cargo-summary > div { gap: 5px; }
 }
 </style>
 </head>
 <body>
-  <main class="stage" aria-label="口袋星期天通关页">
+  <main class="stage" aria-label="口袋星期天 · 通关">
     <section class="console victory" aria-label="复古掌机">
       <header class="console-brand"><h1>POCKET / PUSH</h1></header>
       <div class="lcd-frame">
@@ -217,9 +263,13 @@ svg { shape-rendering: crispEdges; }
 <svg class="trophy" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M8 3h16v3h6v10h-4v3h-6v4h-2v3h6v4H8v-4h6v-3h-2v-4H6v-3H2V6h6zm-2 6v5h3V9zm17 0v5h3V9z"/><path fill="#c8d792" d="M11 5h3v10h-3z"/></svg>
 <h2 class="win-title">好耶，全部归位！</h2>
 <div class="stars" aria-label="三星评价">★ ★ ★</div>
+<div class="cargo-summary" aria-label="箱子进度">
+  <div><span>总箱数</span><strong data-total>5</strong></div>
+  <div class="placed-count"><span>已到位</span><strong><span data-placed>5</span><small> / 5</small></strong></div>
+</div>
 <div class="stats win-stats">
-  <div><span>移动步数</span><strong>048</strong></div>
-  <div><span>推动次数</span><strong>018</strong></div>
+  <div><span>移动步数</span><strong>028</strong></div>
+  <div><span>推动次数</span><strong>007</strong></div>
 </div>
 <button class="primary" type="button" disabled>下一关</button>
 <p class="sleepy">TAKE A LITTLE BREAK.</p>

@@ -1,5 +1,5 @@
 {
-  "stage": "02_文字与风格统一",
+  "stage": "03_棋盘状态辨识",
   "offline": true,
   "results": [
     {
@@ -57,6 +57,35 @@
           "wall",
           "wall"
         ],
+        "targetCoordinates": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            5,
+            3
+          ]
+        ],
+        "crates": 5,
+        "players": 1,
+        "placedCrates": 0,
+        "placedMarks": 0,
+        "playerOnTarget": 0,
+        "totalLabel": "5",
+        "placedLabel": "0",
         "stats": [
           "000",
           "000"
@@ -72,7 +101,7 @@
         {
           "width": 320,
           "scrollWidth": 320,
-          "height": 740,
+          "height": 762,
           "consoleWidth": 288
         },
         {
@@ -90,7 +119,251 @@
         {
           "width": 1440,
           "scrollWidth": 1440,
-          "height": 900,
+          "height": 946,
+          "consoleWidth": 510
+        }
+      ]
+    },
+    {
+      "filename": "partial.html",
+      "content": {
+        "title": "口袋星期天 · 部分完成",
+        "tiles": [
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "floor",
+          "crate-on-target",
+          "floor",
+          "crate-on-target",
+          "floor",
+          "wall",
+          "wall",
+          "floor",
+          "floor",
+          "floor",
+          "floor",
+          "floor",
+          "wall",
+          "wall",
+          "floor",
+          "floor",
+          "player-on-target",
+          "floor",
+          "floor",
+          "wall",
+          "wall",
+          "floor",
+          "crate",
+          "crate",
+          "crate",
+          "floor",
+          "wall",
+          "wall",
+          "target",
+          "floor",
+          "target",
+          "floor",
+          "floor",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall"
+        ],
+        "targetCoordinates": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            5,
+            3
+          ]
+        ],
+        "crates": 5,
+        "players": 1,
+        "placedCrates": 2,
+        "placedMarks": 2,
+        "playerOnTarget": 1,
+        "totalLabel": "5",
+        "placedLabel": "2",
+        "stats": [
+          "011",
+          "002"
+        ],
+        "consoles": 1,
+        "links": 0,
+        "victory": 0,
+        "allButtonsDisabled": true,
+        "scripts": 0,
+        "fontReady": "loaded"
+      },
+      "layouts": [
+        {
+          "width": 320,
+          "scrollWidth": 320,
+          "height": 762,
+          "consoleWidth": 288
+        },
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "height": 844,
+          "consoleWidth": 358
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "height": 1024,
+          "consoleWidth": 510
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "height": 946,
+          "consoleWidth": 510
+        }
+      ]
+    },
+    {
+      "filename": "solved.html",
+      "content": {
+        "title": "口袋星期天 · 全部完成",
+        "tiles": [
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "floor",
+          "crate-on-target",
+          "floor",
+          "crate-on-target",
+          "floor",
+          "wall",
+          "wall",
+          "floor",
+          "floor",
+          "floor",
+          "floor",
+          "floor",
+          "wall",
+          "wall",
+          "floor",
+          "floor",
+          "crate-on-target",
+          "player",
+          "floor",
+          "wall",
+          "wall",
+          "floor",
+          "floor",
+          "floor",
+          "floor",
+          "floor",
+          "wall",
+          "wall",
+          "crate-on-target",
+          "floor",
+          "crate-on-target",
+          "floor",
+          "floor",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall"
+        ],
+        "targetCoordinates": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            5,
+            3
+          ]
+        ],
+        "crates": 5,
+        "players": 1,
+        "placedCrates": 5,
+        "placedMarks": 5,
+        "playerOnTarget": 0,
+        "totalLabel": "5",
+        "placedLabel": "5",
+        "stats": [
+          "028",
+          "007"
+        ],
+        "consoles": 1,
+        "links": 0,
+        "victory": 0,
+        "allButtonsDisabled": true,
+        "scripts": 0,
+        "fontReady": "loaded"
+      },
+      "layouts": [
+        {
+          "width": 320,
+          "scrollWidth": 320,
+          "height": 762,
+          "consoleWidth": 288
+        },
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "height": 844,
+          "consoleWidth": 358
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "height": 1024,
+          "consoleWidth": 510
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "height": 946,
           "consoleWidth": 510
         }
       ]
@@ -100,9 +373,17 @@
       "content": {
         "title": "口袋星期天 · 通关",
         "tiles": [],
+        "targetCoordinates": [],
+        "crates": 0,
+        "players": 0,
+        "placedCrates": 0,
+        "placedMarks": 0,
+        "playerOnTarget": 0,
+        "totalLabel": "5",
+        "placedLabel": "5",
         "stats": [
-          "048",
-          "018"
+          "028",
+          "007"
         ],
         "consoles": 1,
         "links": 0,
@@ -115,13 +396,13 @@
         {
           "width": 320,
           "scrollWidth": 320,
-          "height": 875,
+          "height": 935,
           "consoleWidth": 288
         },
         {
           "width": 390,
           "scrollWidth": 390,
-          "height": 846,
+          "height": 906,
           "consoleWidth": 358
         },
         {
@@ -133,7 +414,7 @@
         {
           "width": 1440,
           "scrollWidth": 1440,
-          "height": 900,
+          "height": 956,
           "consoleWidth": 510
         }
       ]

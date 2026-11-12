@@ -78,7 +78,7 @@ svg { shape-rendering: crispEdges; }
 .stats > div { display: flex; flex: 1; justify-content: space-between; align-items: center; gap: 8px; }
 .stats span { font-size: 14px; white-space: nowrap; }
 .stats strong { font: 26px/1.5 "terminal", monospace; }
-.stats span, .legend, .win-title, .primary {
+.stats span, .legend, .win-title, .primary, .board-heading, .cargo-summary {
   font-family: var(--font-zh);
   font-weight: var(--label-weight);
   font-style: normal;
@@ -98,6 +98,16 @@ svg { shape-rendering: crispEdges; }
   image-rendering: pixelated;
 }
 .cell { position: relative; display: grid; place-items: center; min-width: 0; }
+.board-heading {
+  width: 336px;
+  max-width: 100%;
+  margin: 0 auto 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+.grid-size { font: 18px "terminal", monospace; }
 .wall {
   background: #65764a;
   border: 2px solid #435531;
@@ -109,6 +119,7 @@ svg { shape-rendering: crispEdges; }
 }
 .crate {
   position: absolute;
+  z-index: 1;
   inset: 5px;
   background: #7f8e4d;
   border: 3px solid var(--ink);
@@ -124,13 +135,45 @@ svg { shape-rendering: crispEdges; }
   background: var(--ink);
   transform: rotate(45deg);
 }
-.target { position: relative; width: 20px; height: 20px; border: 3px solid var(--dark-green); transform: rotate(45deg); }
+.target { position: absolute; width: 20px; height: 20px; border: 3px solid var(--dark-green); transform: rotate(45deg); }
 .target::after { content: ""; position: absolute; inset: 4px; background: var(--dark-green); }
-.person { width: 34px; height: 34px; position: relative; z-index: 1; }
-.legend { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 12px; font-size: 12px; }
+.person { width: 34px; height: 34px; position: relative; z-index: 2; }
+.crate.is-placed {
+  display: grid;
+  place-items: center;
+  background: var(--dark-green);
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 2px #9aab6c, 2px 3px #0003;
+  color: #edf2cb;
+}
+.crate.is-placed::before { display: none; }
+.checkmark { width: 76%; height: 76%; display: block; }
+.has-player.has-target { background-color: #c8d792; }
+.has-player.has-target .target {
+  width: 64%;
+  height: 64%;
+  border: 2px solid var(--ink);
+}
+.has-player.has-target .target::after { display: none; }
+.cargo-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  border-block: 1px solid #7f8e4d;
+  padding: 6px 0;
+  font-size: 12px;
+}
+.cargo-summary > div { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.cargo-summary > div + div { border-left: 1px solid #7f8e4d; }
+.cargo-summary strong { display: flex; align-items: baseline; font: 28px/1 "terminal", monospace; letter-spacing: 0; }
+.cargo-summary small { white-space: pre; font: 18px "terminal", monospace; }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-top: 10px; font-size: 12px; }
 .legend span { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 .mini-box { width: 12px; height: 12px; border: 2px solid var(--ink); background: #7f8e4d; }
 .mini-goal { width: 10px; height: 10px; border: 2px solid var(--dark-green); transform: rotate(45deg); }
+.mini-placed { width: 14px; height: 14px; display: grid; place-items: center; border: 1px solid var(--ink); background: var(--dark-green); color: #edf2cb; }
 .console-bottom { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 22px 15px 0; }
 .dpad { display: grid; grid-template-columns: repeat(3, 36px); grid-template-rows: repeat(3, 30px); }
 .dpad button {
@@ -166,6 +209,7 @@ svg { shape-rendering: crispEdges; }
 .trophy { display: block; width: 70px; height: 70px; margin: 12px auto; color: var(--dark-green); }
 .win-title { font-size: 26px; line-height: 1.5; }
 .stars { color: var(--dark-green); font-size: 23px; letter-spacing: 14px; padding-left: 14px; margin-top: 10px; }
+.victory .cargo-summary { margin-top: 18px; }
 .win-stats { margin: 18px 0; padding: 13px 0; border-block: 2px solid var(--dark-green); gap: 0; }
 .win-stats > div { flex-direction: column; gap: 0; }
 .win-stats > div + div { border-left: 2px solid var(--dark-green); }
@@ -203,11 +247,13 @@ svg { shape-rendering: crispEdges; }
   .actions { gap: 12px; }
   .actions button { width: 46px; height: 46px; }
   .win-stats strong { font-size: 38px; }
+  .cargo-summary { font-size: 11px; gap: 8px; }
+  .cargo-summary > div { gap: 5px; }
 }
 </style>
 </head>
 <body>
-  <main class="stage" aria-label="口袋星期天游戏主界面">
+  <main class="stage" aria-label="口袋星期天 · 推箱子">
     <section class="console" aria-label="复古掌机">
       <header class="console-brand"><h1>POCKET / PUSH</h1></header>
       <div class="lcd-frame">
@@ -217,58 +263,67 @@ svg { shape-rendering: crispEdges; }
   <div><span>移动步数</span><strong>000</strong></div>
   <div><span>推动次数</span><strong>000</strong></div>
 </div>
-<div class="board" role="img" aria-label="七乘七仓库地图，五个箱子、五个目标点和一个角色。">
-  <div class="cell wall" data-r="0" data-c="0" data-tile="wall"></div>
-  <div class="cell wall" data-r="0" data-c="1" data-tile="wall"></div>
-  <div class="cell wall" data-r="0" data-c="2" data-tile="wall"></div>
-  <div class="cell wall" data-r="0" data-c="3" data-tile="wall"></div>
-  <div class="cell wall" data-r="0" data-c="4" data-tile="wall"></div>
-  <div class="cell wall" data-r="0" data-c="5" data-tile="wall"></div>
-  <div class="cell wall" data-r="0" data-c="6" data-tile="wall"></div>
-  <div class="cell wall" data-r="1" data-c="0" data-tile="wall"></div>
-  <div class="cell floor" data-r="1" data-c="1" data-tile="floor"></div>
-  <div class="cell floor" data-r="1" data-c="2" data-tile="target"><span class="target"></span></div>
-  <div class="cell floor" data-r="1" data-c="3" data-tile="floor"></div>
-  <div class="cell floor" data-r="1" data-c="4" data-tile="target"><span class="target"></span></div>
-  <div class="cell floor" data-r="1" data-c="5" data-tile="floor"></div>
-  <div class="cell wall" data-r="1" data-c="6" data-tile="wall"></div>
-  <div class="cell wall" data-r="2" data-c="0" data-tile="wall"></div>
-  <div class="cell floor" data-r="2" data-c="1" data-tile="floor"></div>
-  <div class="cell floor" data-r="2" data-c="2" data-tile="crate"><span class="crate"></span></div>
-  <div class="cell floor" data-r="2" data-c="3" data-tile="floor"></div>
-  <div class="cell floor" data-r="2" data-c="4" data-tile="crate"><span class="crate"></span></div>
-  <div class="cell floor" data-r="2" data-c="5" data-tile="floor"></div>
-  <div class="cell wall" data-r="2" data-c="6" data-tile="wall"></div>
-  <div class="cell wall" data-r="3" data-c="0" data-tile="wall"></div>
-  <div class="cell floor" data-r="3" data-c="1" data-tile="floor"></div>
-  <div class="cell floor" data-r="3" data-c="2" data-tile="floor"></div>
-  <div class="cell floor" data-r="3" data-c="3" data-tile="target"><span class="target"></span></div>
-  <div class="cell floor" data-r="3" data-c="4" data-tile="floor"></div>
-  <div class="cell floor" data-r="3" data-c="5" data-tile="floor"></div>
-  <div class="cell wall" data-r="3" data-c="6" data-tile="wall"></div>
-  <div class="cell wall" data-r="4" data-c="0" data-tile="wall"></div>
-  <div class="cell floor" data-r="4" data-c="1" data-tile="floor"></div>
-  <div class="cell floor" data-r="4" data-c="2" data-tile="crate"><span class="crate"></span></div>
-  <div class="cell floor" data-r="4" data-c="3" data-tile="crate"><span class="crate"></span></div>
-  <div class="cell floor" data-r="4" data-c="4" data-tile="crate"><span class="crate"></span></div>
-  <div class="cell floor" data-r="4" data-c="5" data-tile="floor"></div>
-  <div class="cell wall" data-r="4" data-c="6" data-tile="wall"></div>
-  <div class="cell wall" data-r="5" data-c="0" data-tile="wall"></div>
-  <div class="cell floor" data-r="5" data-c="1" data-tile="target"><span class="target"></span></div>
-  <div class="cell floor" data-r="5" data-c="2" data-tile="player"><svg class="person" viewBox="0 0 16 16" aria-hidden="true"><path fill="#313d2d" d="M5 1h6v2h2v6h-2v2h2v4H9v-3H7v3H3v-4h2V9H3V3h2z"/><path fill="#41572c" d="M5 2h6v2H5zM4 4h8v4H4zM5 10h6v2H5zM3 12h3v2H3zM10 12h3v2h-3z"/><path fill="#c8d792" d="M5 5h2v2H5zM9 5h2v2H9z"/></svg></div>
-  <div class="cell floor" data-r="5" data-c="3" data-tile="target"><span class="target"></span></div>
-  <div class="cell floor" data-r="5" data-c="4" data-tile="floor"></div>
-  <div class="cell floor" data-r="5" data-c="5" data-tile="floor"></div>
-  <div class="cell wall" data-r="5" data-c="6" data-tile="wall"></div>
-  <div class="cell wall" data-r="6" data-c="0" data-tile="wall"></div>
-  <div class="cell wall" data-r="6" data-c="1" data-tile="wall"></div>
-  <div class="cell wall" data-r="6" data-c="2" data-tile="wall"></div>
-  <div class="cell wall" data-r="6" data-c="3" data-tile="wall"></div>
-  <div class="cell wall" data-r="6" data-c="4" data-tile="wall"></div>
-  <div class="cell wall" data-r="6" data-c="5" data-tile="wall"></div>
-  <div class="cell wall" data-r="6" data-c="6" data-tile="wall"></div>
+<div class="board-heading"><span>等待归位</span><span class="grid-size">7 × 7</span></div>
+<div class="board" data-scene="initial" role="group" aria-label="七乘七仓库，5个箱子，5个目标点，已到位0个。">
+  <div class="cell wall" data-r="0" data-c="0" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第1列，墙"></div>
+  <div class="cell wall" data-r="0" data-c="1" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第2列，墙"></div>
+  <div class="cell wall" data-r="0" data-c="2" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第3列，墙"></div>
+  <div class="cell wall" data-r="0" data-c="3" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第4列，墙"></div>
+  <div class="cell wall" data-r="0" data-c="4" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第5列，墙"></div>
+  <div class="cell wall" data-r="0" data-c="5" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第6列，墙"></div>
+  <div class="cell wall" data-r="0" data-c="6" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第7列，墙"></div>
+  <div class="cell wall" data-r="1" data-c="0" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第2行第1列，墙"></div>
+  <div class="cell floor" data-r="1" data-c="1" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第2行第2列，地板"></div>
+  <div class="cell floor has-target" data-r="1" data-c="2" data-tile="target" data-target="true" data-occupant="" role="img" aria-label="第2行第3列，目标点"><span class="target" aria-hidden="true"></span></div>
+  <div class="cell floor" data-r="1" data-c="3" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第2行第4列，地板"></div>
+  <div class="cell floor has-target" data-r="1" data-c="4" data-tile="target" data-target="true" data-occupant="" role="img" aria-label="第2行第5列，目标点"><span class="target" aria-hidden="true"></span></div>
+  <div class="cell floor" data-r="1" data-c="5" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第2行第6列，地板"></div>
+  <div class="cell wall" data-r="1" data-c="6" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第2行第7列，墙"></div>
+  <div class="cell wall" data-r="2" data-c="0" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第3行第1列，墙"></div>
+  <div class="cell floor" data-r="2" data-c="1" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第3行第2列，地板"></div>
+  <div class="cell floor has-crate" data-r="2" data-c="2" data-tile="crate" data-target="false" data-occupant="crate" role="img" aria-label="第3行第3列，未到位箱子"><span class="crate"></span></div>
+  <div class="cell floor" data-r="2" data-c="3" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第3行第4列，地板"></div>
+  <div class="cell floor has-crate" data-r="2" data-c="4" data-tile="crate" data-target="false" data-occupant="crate" role="img" aria-label="第3行第5列，未到位箱子"><span class="crate"></span></div>
+  <div class="cell floor" data-r="2" data-c="5" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第3行第6列，地板"></div>
+  <div class="cell wall" data-r="2" data-c="6" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第3行第7列，墙"></div>
+  <div class="cell wall" data-r="3" data-c="0" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第4行第1列，墙"></div>
+  <div class="cell floor" data-r="3" data-c="1" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第4行第2列，地板"></div>
+  <div class="cell floor" data-r="3" data-c="2" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第4行第3列，地板"></div>
+  <div class="cell floor has-target" data-r="3" data-c="3" data-tile="target" data-target="true" data-occupant="" role="img" aria-label="第4行第4列，目标点"><span class="target" aria-hidden="true"></span></div>
+  <div class="cell floor" data-r="3" data-c="4" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第4行第5列，地板"></div>
+  <div class="cell floor" data-r="3" data-c="5" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第4行第6列，地板"></div>
+  <div class="cell wall" data-r="3" data-c="6" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第4行第7列，墙"></div>
+  <div class="cell wall" data-r="4" data-c="0" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第5行第1列，墙"></div>
+  <div class="cell floor" data-r="4" data-c="1" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第5行第2列，地板"></div>
+  <div class="cell floor has-crate" data-r="4" data-c="2" data-tile="crate" data-target="false" data-occupant="crate" role="img" aria-label="第5行第3列，未到位箱子"><span class="crate"></span></div>
+  <div class="cell floor has-crate" data-r="4" data-c="3" data-tile="crate" data-target="false" data-occupant="crate" role="img" aria-label="第5行第4列，未到位箱子"><span class="crate"></span></div>
+  <div class="cell floor has-crate" data-r="4" data-c="4" data-tile="crate" data-target="false" data-occupant="crate" role="img" aria-label="第5行第5列，未到位箱子"><span class="crate"></span></div>
+  <div class="cell floor" data-r="4" data-c="5" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第5行第6列，地板"></div>
+  <div class="cell wall" data-r="4" data-c="6" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第5行第7列，墙"></div>
+  <div class="cell wall" data-r="5" data-c="0" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第6行第1列，墙"></div>
+  <div class="cell floor has-target" data-r="5" data-c="1" data-tile="target" data-target="true" data-occupant="" role="img" aria-label="第6行第2列，目标点"><span class="target" aria-hidden="true"></span></div>
+  <div class="cell floor has-player" data-r="5" data-c="2" data-tile="player" data-target="false" data-occupant="player" role="img" aria-label="第6行第3列，角色"><svg class="person" viewBox="0 0 16 16" aria-hidden="true"><path fill="#313d2d" d="M5 1h6v2h2v6h-2v2h2v4H9v-3H7v3H3v-4h2V9H3V3h2z"/><path fill="#41572c" d="M5 2h6v2H5zM4 4h8v4H4zM5 10h6v2H5zM3 12h3v2H3zM10 12h3v2h-3z"/><path fill="#c8d792" d="M5 5h2v2H5zM9 5h2v2H9z"/></svg></div>
+  <div class="cell floor has-target" data-r="5" data-c="3" data-tile="target" data-target="true" data-occupant="" role="img" aria-label="第6行第4列，目标点"><span class="target" aria-hidden="true"></span></div>
+  <div class="cell floor" data-r="5" data-c="4" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第6行第5列，地板"></div>
+  <div class="cell floor" data-r="5" data-c="5" data-tile="floor" data-target="false" data-occupant="" role="img" aria-label="第6行第6列，地板"></div>
+  <div class="cell wall" data-r="5" data-c="6" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第6行第7列，墙"></div>
+  <div class="cell wall" data-r="6" data-c="0" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第7行第1列，墙"></div>
+  <div class="cell wall" data-r="6" data-c="1" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第7行第2列，墙"></div>
+  <div class="cell wall" data-r="6" data-c="2" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第7行第3列，墙"></div>
+  <div class="cell wall" data-r="6" data-c="3" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第7行第4列，墙"></div>
+  <div class="cell wall" data-r="6" data-c="4" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第7行第5列，墙"></div>
+  <div class="cell wall" data-r="6" data-c="5" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第7行第6列，墙"></div>
+  <div class="cell wall" data-r="6" data-c="6" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第7行第7列，墙"></div>
 </div>
-<div class="legend"><span><i class="mini-box" aria-hidden="true"></i>箱子 × 5</span><span><i class="mini-goal" aria-hidden="true"></i>目标 × 5</span><span>7 × 7</span></div>
+<div class="cargo-summary" aria-label="箱子进度">
+  <div><span>总箱数</span><strong data-total>5</strong></div>
+  <div class="placed-count"><span>已到位</span><strong><span data-placed>0</span><small> / 5</small></strong></div>
+</div>
+<div class="legend" aria-label="棋盘图例">
+  <span><i class="mini-box" aria-hidden="true"></i>未到位</span>
+  <span><i class="mini-placed" aria-hidden="true"><svg class="checkmark" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M1 7h3v3H1zM4 10h3v3H4zM7 7h3v3H7zM10 4h3v3h-3zM13 1h3v3h-3z"/></svg></i>已到位</span>
+  <span><i class="mini-goal" aria-hidden="true"></i>目标点</span>
+</div>
         </div>
       </div>
 <div class="console-bottom">
