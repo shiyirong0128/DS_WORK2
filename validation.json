@@ -1,423 +1,52 @@
 {
-  "stage": "03_棋盘状态辨识",
+  "stage": "04_交互Demo实现",
   "offline": true,
-  "results": [
+  "checks": [
     {
-      "filename": "index.html",
-      "content": {
-        "title": "口袋星期天 · 推箱子",
-        "tiles": [
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "floor",
-          "target",
-          "floor",
-          "target",
-          "floor",
-          "wall",
-          "wall",
-          "floor",
-          "crate",
-          "floor",
-          "crate",
-          "floor",
-          "wall",
-          "wall",
-          "floor",
-          "floor",
-          "target",
-          "floor",
-          "floor",
-          "wall",
-          "wall",
-          "floor",
-          "crate",
-          "crate",
-          "crate",
-          "floor",
-          "wall",
-          "wall",
-          "target",
-          "player",
-          "target",
-          "floor",
-          "floor",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall"
-        ],
-        "targetCoordinates": [
-          [
-            1,
-            2
-          ],
-          [
-            1,
-            4
-          ],
-          [
-            3,
-            3
-          ],
-          [
-            5,
-            1
-          ],
-          [
-            5,
-            3
-          ]
-        ],
-        "crates": 5,
-        "players": 1,
-        "placedCrates": 0,
-        "placedMarks": 0,
-        "playerOnTarget": 0,
-        "totalLabel": "5",
-        "placedLabel": "0",
-        "stats": [
-          "000",
-          "000"
-        ],
-        "consoles": 1,
-        "links": 0,
-        "victory": 0,
-        "allButtonsDisabled": true,
-        "scripts": 0,
-        "fontReady": "loaded"
-      },
-      "layouts": [
-        {
-          "width": 320,
-          "scrollWidth": 320,
-          "height": 762,
-          "consoleWidth": 288
-        },
-        {
-          "width": 390,
-          "scrollWidth": 390,
-          "height": 844,
-          "consoleWidth": 358
-        },
-        {
-          "width": 768,
-          "scrollWidth": 768,
-          "height": 1024,
-          "consoleWidth": 510
-        },
-        {
-          "width": 1440,
-          "scrollWidth": 1440,
-          "height": 946,
-          "consoleWidth": 510
-        }
-      ]
+      "name": "keyboard and mouse: blocked wall and two-crate push do not count"
     },
     {
-      "filename": "partial.html",
-      "content": {
-        "title": "口袋星期天 · 部分完成",
-        "tiles": [
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "floor",
-          "crate-on-target",
-          "floor",
-          "crate-on-target",
-          "floor",
-          "wall",
-          "wall",
-          "floor",
-          "floor",
-          "floor",
-          "floor",
-          "floor",
-          "wall",
-          "wall",
-          "floor",
-          "floor",
-          "player-on-target",
-          "floor",
-          "floor",
-          "wall",
-          "wall",
-          "floor",
-          "crate",
-          "crate",
-          "crate",
-          "floor",
-          "wall",
-          "wall",
-          "target",
-          "floor",
-          "target",
-          "floor",
-          "floor",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall"
-        ],
-        "targetCoordinates": [
-          [
-            1,
-            2
-          ],
-          [
-            1,
-            4
-          ],
-          [
-            3,
-            3
-          ],
-          [
-            5,
-            1
-          ],
-          [
-            5,
-            3
-          ]
-        ],
-        "crates": 5,
-        "players": 1,
-        "placedCrates": 2,
-        "placedMarks": 2,
-        "playerOnTarget": 1,
-        "totalLabel": "5",
-        "placedLabel": "2",
-        "stats": [
-          "011",
-          "002"
-        ],
-        "consoles": 1,
-        "links": 0,
-        "victory": 0,
-        "allButtonsDisabled": true,
-        "scripts": 0,
-        "fontReady": "loaded"
-      },
-      "layouts": [
-        {
-          "width": 320,
-          "scrollWidth": 320,
-          "height": 762,
-          "consoleWidth": 288
-        },
-        {
-          "width": 390,
-          "scrollWidth": 390,
-          "height": 844,
-          "consoleWidth": 358
-        },
-        {
-          "width": 768,
-          "scrollWidth": 768,
-          "height": 1024,
-          "consoleWidth": 510
-        },
-        {
-          "width": 1440,
-          "scrollWidth": 1440,
-          "height": 946,
-          "consoleWidth": 510
-        }
-      ]
+      "name": "single pushes, keyboard/button undo and restart restore positions and statistics"
     },
     {
-      "filename": "solved.html",
-      "content": {
-        "title": "口袋星期天 · 全部完成",
-        "tiles": [
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "floor",
-          "crate-on-target",
-          "floor",
-          "crate-on-target",
-          "floor",
-          "wall",
-          "wall",
-          "floor",
-          "floor",
-          "floor",
-          "floor",
-          "floor",
-          "wall",
-          "wall",
-          "floor",
-          "floor",
-          "crate-on-target",
-          "player",
-          "floor",
-          "wall",
-          "wall",
-          "floor",
-          "floor",
-          "floor",
-          "floor",
-          "floor",
-          "wall",
-          "wall",
-          "crate-on-target",
-          "floor",
-          "crate-on-target",
-          "floor",
-          "floor",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall",
-          "wall"
-        ],
-        "targetCoordinates": [
-          [
-            1,
-            2
-          ],
-          [
-            1,
-            4
-          ],
-          [
-            3,
-            3
-          ],
-          [
-            5,
-            1
-          ],
-          [
-            5,
-            3
-          ]
-        ],
-        "crates": 5,
-        "players": 1,
-        "placedCrates": 5,
-        "placedMarks": 5,
-        "playerOnTarget": 0,
-        "totalLabel": "5",
-        "placedLabel": "5",
-        "stats": [
-          "028",
-          "007"
-        ],
-        "consoles": 1,
-        "links": 0,
-        "victory": 0,
-        "allButtonsDisabled": true,
-        "scripts": 0,
-        "fontReady": "loaded"
-      },
-      "layouts": [
-        {
-          "width": 320,
-          "scrollWidth": 320,
-          "height": 762,
-          "consoleWidth": 288
-        },
-        {
-          "width": 390,
-          "scrollWidth": 390,
-          "height": 844,
-          "consoleWidth": 358
-        },
-        {
-          "width": 768,
-          "scrollWidth": 768,
-          "height": 1024,
-          "consoleWidth": 510
-        },
-        {
-          "width": 1440,
-          "scrollWidth": 1440,
-          "height": 946,
-          "consoleWidth": 510
-        }
-      ]
+      "name": "actual offline win: 28 moves / 7 pushes; undo can leave completion and win again"
     },
     {
-      "filename": "complete.html",
-      "content": {
-        "title": "口袋星期天 · 通关",
-        "tiles": [],
-        "targetCoordinates": [],
-        "crates": 0,
-        "players": 0,
-        "placedCrates": 0,
-        "placedMarks": 0,
-        "playerOnTarget": 0,
-        "totalLabel": "5",
-        "placedLabel": "5",
-        "stats": [
-          "028",
-          "007"
-        ],
-        "consoles": 1,
-        "links": 0,
-        "victory": 1,
-        "allButtonsDisabled": true,
-        "scripts": 0,
-        "fontReady": "loaded"
-      },
-      "layouts": [
-        {
-          "width": 320,
-          "scrollWidth": 320,
-          "height": 935,
-          "consoleWidth": 288
-        },
-        {
-          "width": 390,
-          "scrollWidth": 390,
-          "height": 906,
-          "consoleWidth": 358
-        },
-        {
-          "width": 768,
-          "scrollWidth": 768,
-          "height": 1024,
-          "consoleWidth": 510
-        },
-        {
-          "width": 1440,
-          "scrollWidth": 1440,
-          "height": 956,
-          "consoleWidth": 510
-        }
-      ]
+      "name": "result data is real: an alternate route reports 30 moves; reload and complete.html retain it"
+    },
+    {
+      "name": "storage disabled: game and result reload still work; invalid result trails show no fabricated scores"
+    },
+    {
+      "name": "320/390/768/1440 responsive widths and a real touchscreen tap (one tap = one move)"
+    },
+    {
+      "name": "standalone index.html copied to another folder completes offline"
+    },
+    {
+      "name": "historical state samples stay static; no browser errors or external runtime requests"
+    }
+  ],
+  "layouts": [
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "height": 792
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "height": 855
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768,
+      "height": 1024
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "height": 1000
     }
   ]
 }

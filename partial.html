@@ -20,6 +20,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   margin: 0;
   background: var(--bg);
@@ -29,6 +30,13 @@ body {
 h1, h2, p { margin: 0; }
 button { font: inherit; color: inherit; }
 button:disabled { opacity: 1; cursor: default; }
+body[data-interactive] button:not(:disabled) { cursor: pointer; touch-action: manipulation; }
+body[data-interactive] button:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+body[data-interactive] .console-bottom button:disabled { opacity: .45; }
+body[data-interactive] .console-bottom button:not(:disabled):active { transform: translate(2px, 2px); box-shadow: none; }
+body[data-interactive] .console-bottom button:not(:disabled):hover { filter: brightness(1.1); }
+.board:focus, .win-title:focus { outline: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 svg { shape-rendering: crispEdges; }
 .stage {
   min-height: 100svh;
@@ -215,6 +223,10 @@ svg { shape-rendering: crispEdges; }
 .win-stats > div + div { border-left: 2px solid var(--dark-green); }
 .win-stats strong { font-size: 38px; }
 .primary { padding: 6px; border: 0; background: transparent; color: var(--dark-green); font-size: 20px; line-height: 1.5; }
+.primary { display: block; margin: 0 auto; }
+.secondary { display: block; padding: 7px 12px; margin: 6px auto 0; border: 1px solid var(--dark-green); background: transparent; color: var(--ink); font-size: 12px; font-weight: 700; }
+.result-message { margin: 22px 0; font-size: 14px; line-height: 1.8; }
+.control-hint { margin-top: 12px; text-align: center; font: 12px/1.5 var(--font-zh); color: #4b5c34; letter-spacing: .06em; }
 .sleepy { font: 16px "terminal", monospace; letter-spacing: 2px; margin-top: 10px; }
 
 @media (max-width: 540px) {
@@ -260,11 +272,11 @@ svg { shape-rendering: crispEdges; }
         <p class="lcd-label">DOT MATRIX WITH A LITTLE JOY</p>
         <div class="lcd">
 <div class="stats">
-  <div><span>移动步数</span><strong>011</strong></div>
-  <div><span>推动次数</span><strong>002</strong></div>
+  <div><span>移动步数</span><strong data-counter="moves">011</strong></div>
+  <div><span>推动次数</span><strong data-counter="pushes">002</strong></div>
 </div>
-<div class="board-heading"><span>部分完成</span><span class="grid-size">7 × 7</span></div>
-<div class="board" data-scene="partial" role="group" aria-label="七乘七仓库，5个箱子，5个目标点，已到位2个。">
+<div class="board-heading"><span data-status>部分完成</span><span class="grid-size">7 × 7</span></div>
+<div class="board" data-scene="partial" tabindex="-1" role="group" aria-label="七乘七仓库，5个箱子，5个目标点，已到位2个。">
   <div class="cell wall" data-r="0" data-c="0" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第1列，墙"></div>
   <div class="cell wall" data-r="0" data-c="1" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第2列，墙"></div>
   <div class="cell wall" data-r="0" data-c="2" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第3列，墙"></div>
@@ -328,19 +340,21 @@ svg { shape-rendering: crispEdges; }
       </div>
 <div class="console-bottom">
   <div class="dpad" aria-label="方向控制">
-    <button class="up" type="button" aria-label="向上" disabled>↑</button>
-    <button class="left" type="button" aria-label="向左" disabled>←</button>
+    <button class="up" data-direction="U" type="button" aria-label="向上" disabled>↑</button>
+    <button class="left" data-direction="L" type="button" aria-label="向左" disabled>←</button>
     <i aria-hidden="true"></i>
-    <button class="right" type="button" aria-label="向右" disabled>→</button>
-    <button class="down" type="button" aria-label="向下" disabled>↓</button>
+    <button class="right" data-direction="R" type="button" aria-label="向右" disabled>→</button>
+    <button class="down" data-direction="D" type="button" aria-label="向下" disabled>↓</button>
   </div>
   <div class="actions">
-    <button type="button" aria-label="撤销" disabled>↶</button>
-    <button type="button" aria-label="重开" disabled>↻</button>
+    <button type="button" data-action="undo" aria-label="撤销" title="撤销（Z / Backspace）" disabled>↶</button>
+    <button type="button" data-action="restart" aria-label="重开" title="重开（R）" disabled>↻</button>
   </div>
 </div>
 <div class="speaker" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
     </section>
   </main>
+
 </body>
 </html>

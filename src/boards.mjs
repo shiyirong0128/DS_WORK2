@@ -1,4 +1,4 @@
-// Static fixtures only. Coordinates are zero-based [row, column].
+// Shared live level and static reference scenes. Coordinates are zero-based [row, column].
 // Terrain and targets are independent of crates and the player.
 export const room = [
   '#######',
