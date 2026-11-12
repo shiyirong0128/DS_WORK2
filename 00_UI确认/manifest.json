@@ -1,0 +1,142 @@
+{
+  "stage": "00_UI确认",
+  "map": [
+    "#######",
+    "# . . #",
+    "# $ $ #",
+    "#  .  #",
+    "# $$$ #",
+    "#.@.  #",
+    "#######"
+  ],
+  "initial": {
+    "moves": 0,
+    "pushes": 0
+  },
+  "completionExample": {
+    "moves": 48,
+    "pushes": 18
+  },
+  "themes": [
+    {
+      "number": "01",
+      "name": "琥珀调度站",
+      "slug": "01-amber-depot",
+      "description": "工业仪表 × 琥珀黄 × 铆钉框架",
+      "colors": [
+        "#292d28",
+        "#edb951",
+        "#eddfb9",
+        "#58624c"
+      ]
+    },
+    {
+      "number": "02",
+      "name": "口袋星期天",
+      "slug": "02-pocket-sunday",
+      "description": "掌机竖屏 × 苔绿液晶 × 点阵字",
+      "colors": [
+        "#d9dfc8",
+        "#909b60",
+        "#313d2d",
+        "#eeeada"
+      ]
+    },
+    {
+      "number": "03",
+      "name": "午夜投币厅",
+      "slug": "03-midnight-arcade",
+      "description": "街机机台 × 霓虹紫红 × 像素招牌",
+      "colors": [
+        "#171126",
+        "#a881ee",
+        "#ff6baf",
+        "#76e8df"
+      ]
+    },
+    {
+      "number": "04",
+      "name": "搬运日报",
+      "slug": "04-daily-push",
+      "description": "老报纸版式 × 油墨黑 × 宋体铅字",
+      "colors": [
+        "#dfdbcf",
+        "#f5f1e6",
+        "#30312c",
+        "#a54835"
+      ]
+    },
+    {
+      "number": "05",
+      "name": "星港第七舱",
+      "slug": "05-orbital-seven",
+      "description": "航天终端 × 冰蓝荧光 × 指令字形",
+      "colors": [
+        "#0c1a25",
+        "#132733",
+        "#7ddfe4",
+        "#d7f4ec"
+      ]
+    },
+    {
+      "number": "06",
+      "name": "落日海岸邮局",
+      "slug": "06-sunset-post",
+      "description": "邮政明信片 × 珊瑚橙蓝 × 像素邮戳",
+      "colors": [
+        "#f1e0c6",
+        "#ed8a64",
+        "#3d706c",
+        "#fff3da"
+      ]
+    },
+    {
+      "number": "07",
+      "name": "苔藓小旅社",
+      "slug": "07-moss-lodge",
+      "description": "木屋布告栏 × 奶油草绿 × 手作像素",
+      "colors": [
+        "#e1e8d1",
+        "#f9f1d9",
+        "#49644c",
+        "#c58b53"
+      ]
+    },
+    {
+      "number": "08",
+      "name": "蓝图推演室",
+      "slug": "08-blueprint-lab",
+      "description": "工程坐标 × 钴蓝白线 × 技术等宽字",
+      "colors": [
+        "#1757aa",
+        "#1a60b9",
+        "#e7f1e9",
+        "#9bc9e7"
+      ]
+    },
+    {
+      "number": "09",
+      "name": "红白客厅",
+      "slug": "09-family-console",
+      "description": "横置游戏机 × 砖红奶白 × 八位机字体",
+      "colors": [
+        "#e4ddd1",
+        "#f5efdc",
+        "#a63938",
+        "#343c45"
+      ]
+    },
+    {
+      "number": "10",
+      "name": "地牢藏宝室",
+      "slug": "10-dungeon-vault",
+      "description": "卷轴任务栏 × 黑金石墙 × 史诗像素字",
+      "colors": [
+        "#1f2028",
+        "#2b2c35",
+        "#d4b16b",
+        "#77717f"
+      ]
+    }
+  ]
+}
