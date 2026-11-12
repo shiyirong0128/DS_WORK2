@@ -24,8 +24,12 @@ button:disabled { opacity: 1; cursor: default; }
 body[data-interactive] button:not(:disabled) { cursor: pointer; touch-action: manipulation; }
 body[data-interactive] button:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
 body[data-interactive] .console-bottom button:disabled { opacity: .45; }
-body[data-interactive] .console-bottom button:not(:disabled):active { transform: translate(2px, 2px); box-shadow: none; }
 body[data-interactive] .console-bottom button:not(:disabled):hover { filter: brightness(1.1); }
+body[data-interactive] .console-bottom button:not(:disabled):is(:active, .is-pressed) {
+  filter: brightness(.85);
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
 .board:focus, .win-title:focus { outline: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 svg { shape-rendering: crispEdges; }

@@ -10,6 +10,23 @@ let view = resultRequested ? 'result' : 'game';
 const gameView = document.getElementById('game-view');
 const resultView = document.getElementById('result-view');
 const boardElement = gameView.querySelector('.board');
+const directionKeys = { arrowup: 'U', arrowdown: 'D', arrowleft: 'L', arrowright: 'R', w: 'U', s: 'D', a: 'L', d: 'R' };
+const directionButtons = new Map([...document.querySelectorAll('[data-direction]')].map(button => [button.dataset.direction, button]));
+// Track physical keys separately: releasing W must not release a still-held ArrowUp.
+const heldDirectionKeys = new Map();
+function syncDirectionPresses() {
+  for (const [key, direction] of heldDirectionKeys) {
+    if (directionButtons.get(direction).disabled) heldDirectionKeys.delete(key);
+  }
+  const directions = new Set(heldDirectionKeys.values());
+  for (const [direction, button] of directionButtons) {
+    button.classList.toggle('is-pressed', !button.disabled && directions.has(direction));
+  }
+}
+function clearDirectionPresses() {
+  heldDirectionKeys.clear();
+  syncDirectionPresses();
+}
 const announce = text => { document.getElementById('announcer').textContent = text; };
 const setFragment = trail => {
   const url = new URL(location.href);
@@ -30,6 +47,7 @@ function render() {
   resultView.hidden = view !== 'result';
   document.querySelector('.console').classList.toggle('victory', view === 'result');
   document.querySelectorAll('[data-direction]').forEach(button => { button.disabled = view !== 'game' || state.won; });
+  syncDirectionPresses();
   document.querySelector('[data-action="undo"]').disabled = !state.canUndo;
   document.querySelectorAll('[data-action="restart"]').forEach(button => { button.disabled = false; });
   document.querySelector('[data-action="result"]').hidden = !state.won;
@@ -95,9 +113,22 @@ document.addEventListener('click', event => {
 document.addEventListener('keydown', event => {
   if (event.isComposing || event.ctrlKey || event.altKey || event.metaKey || event.target.closest('input,textarea,select,[contenteditable="true"]')) return;
   const key = event.key.toLowerCase();
-  const direction = { arrowup: 'U', arrowdown: 'D', arrowleft: 'L', arrowright: 'R', w: 'U', s: 'D', a: 'L', d: 'R' }[key];
-  if (direction) { event.preventDefault(); move(direction); }
+  const direction = directionKeys[key];
+  if (direction) {
+    event.preventDefault();
+    if (directionButtons.get(direction).disabled) return;
+    heldDirectionKeys.set(event.code || key, direction);
+    syncDirectionPresses();
+    move(direction);
+  }
   else if (key === 'z' || key === 'backspace') { event.preventDefault(); action('undo'); }
   else if (key === 'r') { event.preventDefault(); action('restart'); }
 });
+document.addEventListener('keyup', event => {
+  heldDirectionKeys.delete(event.code || event.key.toLowerCase());
+  syncDirectionPresses();
+});
+window.addEventListener('blur', clearDirectionPresses);
+window.addEventListener('pagehide', clearDirectionPresses);
+document.addEventListener('visibilitychange', () => { if (document.hidden) clearDirectionPresses(); });
 render();

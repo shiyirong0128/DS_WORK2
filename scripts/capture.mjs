@@ -11,18 +11,23 @@ fs.mkdirSync(qa, { recursive: true });
 const browser = await startBrowser(path.join(qa, 'demo-profile'));
 const { call, evaluate, navigate } = browser;
 const url = file => pathToFileURL(path.join(root, file)).href;
-const report = { stage: '04_交互Demo实现', offline: true, checks: [], layouts: [] };
+const report = { stage: '05_WASD按键反馈', offline: true, checks: [], layouts: [] };
 const passed = (name, detail = {}) => { report.checks.push({ name, ...detail }); console.log('PASS', name); };
 const size = async (width, height = 1000, mobile = false) => {
   await call('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile });
   await evaluate('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))');
 };
-const key = async value => {
+const key = async (value, type, extra = {}) => {
   const codes = { ArrowUp: ['ArrowUp', 38], ArrowDown: ['ArrowDown', 40], ArrowLeft: ['ArrowLeft', 37], ArrowRight: ['ArrowRight', 39], Backspace: ['Backspace', 8] };
   const [code, keyCode] = codes[value] || ['Key' + value.toUpperCase(), value.toUpperCase().charCodeAt(0)];
-  await call('Input.dispatchKeyEvent', { type: 'keyDown', key: value, code, windowsVirtualKeyCode: keyCode });
-  await call('Input.dispatchKeyEvent', { type: 'keyUp', key: value, code, windowsVirtualKeyCode: keyCode });
+  for (const eventType of type ? [type] : ['keyDown', 'keyUp']) {
+    await call('Input.dispatchKeyEvent', { type: eventType, key: value, code, windowsVirtualKeyCode: keyCode, ...extra });
+  }
 };
+const buttonStyle = direction => evaluate(`(() => {
+  const style = getComputedStyle(document.querySelector('[data-direction="${direction}"]'));
+  return { filter: style.filter, transform: style.transform, shadow: style.boxShadow, opacity: style.opacity };
+})()`);
 const point = selector => evaluate(`(() => { const el = document.querySelector(${JSON.stringify(selector)}); if (!el || el.disabled || el.hidden) throw Error('Unavailable control'); el.scrollIntoView({block:'center'}); const r = el.getBoundingClientRect(); return {x:r.x+r.width/2,y:r.y+r.height/2}; })()`);
 const click = async selector => {
   const p = await point(selector);
@@ -71,6 +76,54 @@ try {
   assert.equal(initial.moves, 0); assert.equal(initial.undoDisabled, true);
   assert.equal(initial.directionsDisabled, false); assert.equal(initial.view, 'game');
   await shoot('游戏主界面');
+
+  // Compare rendered keyboard feedback with native mouse feedback, including blocked moves.
+  const idleStyle = await buttonStyle('U');
+  const mousePoint = await point('[data-direction="U"]');
+  await call('Input.dispatchMouseEvent', { type: 'mousePressed', ...mousePoint, button: 'left', clickCount: 1 });
+  const pressedStyle = await buttonStyle('U');
+  assert.notEqual(pressedStyle.filter, idleStyle.filter);
+  assert.notEqual(pressedStyle.transform, idleStyle.transform);
+  assert.notEqual(pressedStyle.shadow, idleStyle.shadow);
+  await call('Input.dispatchMouseEvent', { type: 'mouseReleased', ...mousePoint, button: 'left', clickCount: 1 });
+  await call('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 0, y: 0 });
+  assert.deepEqual(await buttonStyle('U'), idleStyle);
+  for (const [value, direction] of Object.entries({ w:'U', a:'L', s:'D', d:'R', ArrowUp:'U', ArrowLeft:'L', ArrowDown:'D', ArrowRight:'R' })) {
+    await key('r');
+    await key(value, 'keyDown');
+    assert.deepEqual(await buttonStyle(direction), pressedStyle, value);
+    const heldState = await read();
+    await key(value, 'keyUp');
+    assert.deepEqual(await buttonStyle(direction), idleStyle, value + ' release');
+    assert.deepEqual(await read(), heldState); // Releasing a key never moves again.
+  }
+  await key('r');
+  await key('w', 'keyDown');
+  await shoot('按键反馈');
+  await key('ArrowUp', 'keyDown');
+  await key('w', 'keyUp');
+  assert.deepEqual(await buttonStyle('U'), pressedStyle);
+  await key('a', 'keyDown');
+  assert.deepEqual(await buttonStyle('L'), pressedStyle);
+  await key('ArrowUp', 'keyUp');
+  assert.deepEqual(await buttonStyle('U'), idleStyle);
+  assert.deepEqual(await buttonStyle('L'), pressedStyle);
+  await key('a', 'keyUp');
+  await key('w', 'keyDown');
+  await key('w', 'keyDown', { autoRepeat: true });
+  await key('W', 'keyUp', { modifiers: 8 }); // Shift changes the label, not the physical key.
+  assert.deepEqual(await buttonStyle('U'), idleStyle);
+  await key('w', 'keyDown');
+  await key('a', 'keyDown');
+  const beforeBlur = await read();
+  // Headless Chrome keeps tabs focused; dispatch the window event to check cleanup.
+  await evaluate("window.dispatchEvent(new Event('blur'))");
+  for (const direction of ['U','L']) assert.deepEqual(await buttonStyle(direction), idleStyle);
+  await key('w', 'keyUp'); await key('a', 'keyUp');
+  assert.deepEqual(await read(), beforeBlur);
+  await key('r'); assert.deepEqual(await read(), initial);
+  passed('WASD/arrows match mouse press appearance; release, key overlap, repeat and window blur event clear correctly');
+
   await key('ArrowDown');
   assert.deepEqual(await read(), initial);
   await key('a');
@@ -100,7 +153,25 @@ try {
   assert.equal(partial.moves, 11); assert.equal(partial.pushes, 2); assert.equal(partial.placed, 2);
   assert.equal(partial.marks, 2); assert.equal(partial.playerOnTarget, true); assert.equal(partial.targets, 5);
   await shoot('部分完成');
-  await play(solution.slice(partialSolution.length));
+  await play(solution.slice(partialSolution.length, -1));
+  await key(arrows[solution.at(-1)], 'keyDown');
+  const disabledStyle = await buttonStyle('L');
+  assert.equal(disabledStyle.transform, idleStyle.transform);
+  assert.equal(disabledStyle.filter, idleStyle.filter);
+  assert.equal(disabledStyle.shadow, idleStyle.shadow);
+  assert.notEqual(disabledStyle.opacity, idleStyle.opacity);
+  await key(arrows[solution.at(-1)], 'keyUp');
+  for (const value of ['w', 'ArrowLeft']) {
+    await key(value, 'keyDown');
+    assert.deepEqual(await buttonStyle(value === 'w' ? 'U' : 'L'), disabledStyle);
+    await key(value, 'keyUp');
+  }
+  const disabledPoint = await evaluate(`(() => { const r = document.querySelector('[data-direction="U"]').getBoundingClientRect(); return { x:r.x+r.width/2, y:r.y+r.height/2 }; })()`);
+  await call('Input.dispatchMouseEvent', { type: 'mousePressed', ...disabledPoint, button: 'left', clickCount: 1 });
+  assert.deepEqual(await buttonStyle('U'), disabledStyle);
+  await call('Input.dispatchMouseEvent', { type: 'mouseReleased', ...disabledPoint, button: 'left', clickCount: 1 });
+  await call('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 0, y: 0 });
+  passed('winning key releases its visual state immediately; disabled directions ignore keyboard and mouse press styling');
   let win = await read();
   assert.equal(win.view, 'result'); assert.equal(win.emptyResult, false);
   assert.equal(win.resultMoves, 28); assert.equal(win.resultPushes, 7); assert.equal(win.placed, 5);

@@ -1,12 +1,18 @@
 {
-  "stage": "04_交互Demo实现",
+  "stage": "05_WASD按键反馈",
   "offline": true,
   "checks": [
+    {
+      "name": "WASD/arrows match mouse press appearance; release, key overlap, repeat and window blur event clear correctly"
+    },
     {
       "name": "keyboard and mouse: blocked wall and two-crate push do not count"
     },
     {
       "name": "single pushes, keyboard/button undo and restart restore positions and statistics"
+    },
+    {
+      "name": "winning key releases its visual state immediately; disabled directions ignore keyboard and mouse press styling"
     },
     {
       "name": "actual offline win: 28 moves / 7 pushes; undo can leave completion and win again"
