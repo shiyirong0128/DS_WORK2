@@ -1,5 +1,5 @@
 {
-  "stage": "01_风格确认",
+  "stage": "02_文字与风格统一",
   "offline": true,
   "results": [
     {
@@ -115,13 +115,13 @@
         {
           "width": 320,
           "scrollWidth": 320,
-          "height": 869,
+          "height": 875,
           "consoleWidth": 288
         },
         {
           "width": 390,
           "scrollWidth": 390,
-          "height": 844,
+          "height": 846,
           "consoleWidth": 358
         },
         {

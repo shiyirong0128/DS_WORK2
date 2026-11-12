@@ -58,7 +58,7 @@ try {
   await call('Page.enable');
   await call('Network.enable');
   await call('Network.emulateNetworkConditions', { offline: true, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
-  const report = { stage: '01_风格确认', offline: true, results: [] };
+  const report = { stage: '02_文字与风格统一', offline: true, results: [] };
   const expectedMap = ['#######', '# . . #', '# $ $ #', '#  .  #', '# $$$ #', '#.@.  #', '#######'];
   const expectedTiles = expectedMap.flatMap(row => [...row].map(c => ({ '#': 'wall', ' ': 'floor', '$': 'crate', '.': 'target', '@': 'player' }[c])));
 

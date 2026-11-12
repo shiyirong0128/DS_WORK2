@@ -28,8 +28,8 @@ const controls = `<div class="console-bottom">
     <button class="down" type="button" aria-label="向下" disabled>↓</button>
   </div>
   <div class="actions">
-    <button type="button" aria-label="撤销" disabled>↶<span>撤销</span></button>
-    <button type="button" aria-label="重开" disabled>↻<span>重开</span></button>
+    <button type="button" aria-label="撤销" disabled>↶</button>
+    <button type="button" aria-label="重开" disabled>↻</button>
   </div>
 </div>
 <div class="speaker" aria-hidden="true">${'<i></i>'.repeat(6)}</div>`;
@@ -59,7 +59,7 @@ ${css}</style>
 <body>
   <main class="stage" aria-label="口袋星期天${victory ? '通关页' : '游戏主界面'}">
     <section class="console${victory ? ' victory' : ''}" aria-label="复古掌机">
-      <header class="console-brand"><h1>POCKET / PUSH</h1><small>星期天，慢慢来。</small></header>
+      <header class="console-brand"><h1>POCKET / PUSH</h1></header>
       <div class="lcd-frame">
         <p class="lcd-label">DOT MATRIX WITH A LITTLE JOY</p>
         <div class="lcd">
