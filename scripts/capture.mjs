@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { startBrowser } from './browser.mjs';
 import { solution, partialSolution } from '../tests/fixtures.mjs';
+import { checkBlockedFeedback } from '../tests/blocked-feedback.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const qa = path.join(root, '.qa');
@@ -11,7 +12,7 @@ fs.mkdirSync(qa, { recursive: true });
 const browser = await startBrowser(path.join(qa, 'demo-profile'));
 const { call, evaluate, navigate } = browser;
 const url = file => pathToFileURL(path.join(root, file)).href;
-const report = { stage: '05_WASD按键反馈', offline: true, checks: [], layouts: [] };
+const report = { stage: '06_受阻反馈优化', offline: true, checks: [], layouts: [] };
 const passed = (name, detail = {}) => { report.checks.push({ name, ...detail }); console.log('PASS', name); };
 const size = async (width, height = 1000, mobile = false) => {
   await call('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile });
@@ -123,6 +124,8 @@ try {
   assert.deepEqual(await read(), beforeBlur);
   await key('r'); assert.deepEqual(await read(), initial);
   passed('WASD/arrows match mouse press appearance; release, key overlap, repeat and window blur event clear correctly');
+
+  await checkBlockedFeedback({ call, evaluate, key, click, read, play, shoot, size, passed });
 
   await key('ArrowDown');
   assert.deepEqual(await read(), initial);

@@ -111,6 +111,7 @@ svg { shape-rendering: crispEdges; }
 }
 .cell { position: relative; display: grid; place-items: center; min-width: 0; }
 .board-heading {
+  position: relative;
   width: 336px;
   max-width: 100%;
   margin: 0 auto 8px;
@@ -120,6 +121,23 @@ svg { shape-rendering: crispEdges; }
   font-size: 12px;
 }
 .grid-size { font: 18px "terminal", monospace; }
+.blocked-notice {
+  position: absolute;
+  z-index: 3;
+  inset: -4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 2px solid var(--ink);
+  background: var(--dark-green);
+  color: #edf2cb;
+  box-shadow: 2px 2px #7f8e4d;
+  font-size: 12px;
+  line-height: 1;
+  pointer-events: none;
+}
+.notice-english { font: 20px/1 "terminal", monospace; letter-spacing: 0; }
 .wall {
   background: #65764a;
   border: 2px solid #435531;
@@ -279,7 +297,7 @@ svg { shape-rendering: crispEdges; }
   <div><span>移动步数</span><strong data-counter="moves">000</strong></div>
   <div><span>推动次数</span><strong data-counter="pushes">000</strong></div>
 </div>
-<div class="board-heading"><span data-status>等待归位</span><span class="grid-size">7 × 7</span></div>
+<div class="board-heading"><span data-status>等待归位</span><span class="grid-size">7 × 7</span><span id="blocked-notice" class="blocked-notice" hidden aria-hidden="true"><span class="notice-english">Oops</span><span>推不动了</span></span></div>
 <div class="board" data-scene="initial" tabindex="-1" role="group" aria-label="七乘七仓库，5个箱子，5个目标点，已到位0个。">
   <div class="cell wall" data-r="0" data-c="0" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第1列，墙"></div>
   <div class="cell wall" data-r="0" data-c="1" data-tile="wall" data-target="false" data-occupant="" role="img" aria-label="第1行第2列，墙"></div>
@@ -479,6 +497,47 @@ function clearDirectionPresses() {
   syncDirectionPresses();
 }
 const announce = text => { document.getElementById('announcer').textContent = text; };
+const blockedNotice = document.getElementById('blocked-notice');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let blockedAnimation = null;
+let blockedNoticeTimer = null;
+let nextBlockedFeedbackAt = 0;
+function clearBlockedFeedback() {
+  blockedAnimation?.cancel();
+  blockedAnimation = null;
+  clearTimeout(blockedNoticeTimer);
+  blockedNoticeTimer = null;
+  blockedNotice.hidden = true;
+  nextBlockedFeedbackAt = 0;
+}
+function showBlockedFeedback(direction) {
+  const now = performance.now();
+  if (now < nextBlockedFeedbackAt) return;
+  nextBlockedFeedbackAt = now + 450;
+  // Animate only the sprite; the grid, game state and undo history never change.
+  blockedAnimation?.cancel();
+  if (!reducedMotion.matches) {
+    const [x, y] = { U: [0, -4], D: [0, 4], L: [-4, 0], R: [4, 0] }[direction];
+    const animation = boardElement.querySelector('.person').animate([
+      { transform: 'translate(0, 0)', easing: 'steps(2, end)' },
+      { transform: `translate(${x}px, ${y}px)`, offset: .4, easing: 'steps(2, end)' },
+      { transform: 'translate(0, 0)' },
+    ], { duration: 220 });
+    blockedAnimation = animation;
+    animation.onfinish = () => { if (blockedAnimation === animation) blockedAnimation = null; };
+  }
+  blockedNotice.hidden = false;
+  clearTimeout(blockedNoticeTimer);
+  blockedNoticeTimer = setTimeout(() => {
+    blockedNotice.hidden = true;
+    blockedNoticeTimer = null;
+  }, 900);
+  announce('Oops推不动了');
+}
+function clearTransientFeedback() {
+  clearDirectionPresses();
+  clearBlockedFeedback();
+}
 const setFragment = trail => {
   const url = new URL(location.href);
   url.hash = trail ? 'result=' + trail : '';
@@ -486,6 +545,7 @@ const setFragment = trail => {
 };
 
 function render() {
+  clearBlockedFeedback();
   const state = game.snapshot();
   boardElement.innerHTML = boardCells(state);
   boardElement.dataset.scene = 'live';
@@ -518,7 +578,7 @@ function move(direction) {
   if (view !== 'game') return;
   const outcome = game.move(direction);
   if (!outcome.moved) {
-    announce(outcome.reason === 'wall' ? '前方是墙，本次不计步。' : outcome.reason === 'crate' ? '箱子被挡住，本次不计步。' : '已经通关，可以撤销或重开。');
+    if (outcome.reason === 'wall' || outcome.reason === 'crate') showBlockedFeedback(direction);
     return;
   }
   if (game.snapshot().won) {
@@ -579,9 +639,9 @@ document.addEventListener('keyup', event => {
   heldDirectionKeys.delete(event.code || event.key.toLowerCase());
   syncDirectionPresses();
 });
-window.addEventListener('blur', clearDirectionPresses);
-window.addEventListener('pagehide', clearDirectionPresses);
-document.addEventListener('visibilitychange', () => { if (document.hidden) clearDirectionPresses(); });
+window.addEventListener('blur', clearTransientFeedback);
+window.addEventListener('pagehide', clearTransientFeedback);
+document.addEventListener('visibilitychange', () => { if (document.hidden) clearTransientFeedback(); });
 render();
 
 })();</script>

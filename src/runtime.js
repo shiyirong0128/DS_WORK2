@@ -28,6 +28,47 @@ function clearDirectionPresses() {
   syncDirectionPresses();
 }
 const announce = text => { document.getElementById('announcer').textContent = text; };
+const blockedNotice = document.getElementById('blocked-notice');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let blockedAnimation = null;
+let blockedNoticeTimer = null;
+let nextBlockedFeedbackAt = 0;
+function clearBlockedFeedback() {
+  blockedAnimation?.cancel();
+  blockedAnimation = null;
+  clearTimeout(blockedNoticeTimer);
+  blockedNoticeTimer = null;
+  blockedNotice.hidden = true;
+  nextBlockedFeedbackAt = 0;
+}
+function showBlockedFeedback(direction) {
+  const now = performance.now();
+  if (now < nextBlockedFeedbackAt) return;
+  nextBlockedFeedbackAt = now + 450;
+  // Animate only the sprite; the grid, game state and undo history never change.
+  blockedAnimation?.cancel();
+  if (!reducedMotion.matches) {
+    const [x, y] = { U: [0, -4], D: [0, 4], L: [-4, 0], R: [4, 0] }[direction];
+    const animation = boardElement.querySelector('.person').animate([
+      { transform: 'translate(0, 0)', easing: 'steps(2, end)' },
+      { transform: `translate(${x}px, ${y}px)`, offset: .4, easing: 'steps(2, end)' },
+      { transform: 'translate(0, 0)' },
+    ], { duration: 220 });
+    blockedAnimation = animation;
+    animation.onfinish = () => { if (blockedAnimation === animation) blockedAnimation = null; };
+  }
+  blockedNotice.hidden = false;
+  clearTimeout(blockedNoticeTimer);
+  blockedNoticeTimer = setTimeout(() => {
+    blockedNotice.hidden = true;
+    blockedNoticeTimer = null;
+  }, 900);
+  announce('Oops推不动了');
+}
+function clearTransientFeedback() {
+  clearDirectionPresses();
+  clearBlockedFeedback();
+}
 const setFragment = trail => {
   const url = new URL(location.href);
   url.hash = trail ? 'result=' + trail : '';
@@ -35,6 +76,7 @@ const setFragment = trail => {
 };
 
 function render() {
+  clearBlockedFeedback();
   const state = game.snapshot();
   boardElement.innerHTML = boardCells(state);
   boardElement.dataset.scene = 'live';
@@ -67,7 +109,7 @@ function move(direction) {
   if (view !== 'game') return;
   const outcome = game.move(direction);
   if (!outcome.moved) {
-    announce(outcome.reason === 'wall' ? '前方是墙，本次不计步。' : outcome.reason === 'crate' ? '箱子被挡住，本次不计步。' : '已经通关，可以撤销或重开。');
+    if (outcome.reason === 'wall' || outcome.reason === 'crate') showBlockedFeedback(direction);
     return;
   }
   if (game.snapshot().won) {
@@ -128,7 +170,7 @@ document.addEventListener('keyup', event => {
   heldDirectionKeys.delete(event.code || event.key.toLowerCase());
   syncDirectionPresses();
 });
-window.addEventListener('blur', clearDirectionPresses);
-window.addEventListener('pagehide', clearDirectionPresses);
-document.addEventListener('visibilitychange', () => { if (document.hidden) clearDirectionPresses(); });
+window.addEventListener('blur', clearTransientFeedback);
+window.addEventListener('pagehide', clearTransientFeedback);
+document.addEventListener('visibilitychange', () => { if (document.hidden) clearTransientFeedback(); });
 render();

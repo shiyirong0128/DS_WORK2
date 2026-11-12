@@ -1,9 +1,23 @@
 {
-  "stage": "05_WASD按键反馈",
+  "stage": "06_受阻反馈优化",
   "offline": true,
   "checks": [
     {
       "name": "WASD/arrows match mouse press appearance; release, key overlap, repeat and window blur event clear correctly"
+    },
+    {
+      "name": "wall, blocked crate and adjacent crates: WASD/arrows/mouse recoil in all four directions without changing positions, counts or layout"
+    },
+    {
+      "name": "held blocked key is rate-limited, at most one recoil runs, notice expires and no queued animation follows release",
+      "bursts": 3,
+      "minimumObservedGapMs": 462
+    },
+    {
+      "name": "valid move, undo, restart and blur cancel stale feedback; reduced-motion mode keeps the message without recoil"
+    },
+    {
+      "name": "320px blocked notice stays above the board and inside the screen"
     },
     {
       "name": "keyboard and mouse: blocked wall and two-crate push do not count"

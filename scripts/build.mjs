@@ -54,7 +54,7 @@ const legend = `<div class="legend" aria-label="棋盘图例">
   <span><i class="mini-goal" aria-hidden="true"></i>目标点</span>
 </div>`;
 const game = scene => `${stats(scene)}
-<div class="board-heading"><span data-status>${scene.status}</span><span class="grid-size">7 × 7</span></div>
+<div class="board-heading"><span data-status>${scene.status}</span><span class="grid-size">7 × 7</span>${scene.id === 'initial' ? '<span id="blocked-notice" class="blocked-notice" hidden aria-hidden="true"><span class="notice-english">Oops</span><span>推不动了</span></span>' : ''}</div>
 ${board(scene)}
 ${summary(scene)}
 ${legend}`;
