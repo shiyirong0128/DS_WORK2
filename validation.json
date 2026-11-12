@@ -1,0 +1,142 @@
+{
+  "stage": "01_风格确认",
+  "offline": true,
+  "results": [
+    {
+      "filename": "index.html",
+      "content": {
+        "title": "口袋星期天 · 推箱子",
+        "tiles": [
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "floor",
+          "target",
+          "floor",
+          "target",
+          "floor",
+          "wall",
+          "wall",
+          "floor",
+          "crate",
+          "floor",
+          "crate",
+          "floor",
+          "wall",
+          "wall",
+          "floor",
+          "floor",
+          "target",
+          "floor",
+          "floor",
+          "wall",
+          "wall",
+          "floor",
+          "crate",
+          "crate",
+          "crate",
+          "floor",
+          "wall",
+          "wall",
+          "target",
+          "player",
+          "target",
+          "floor",
+          "floor",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall"
+        ],
+        "stats": [
+          "000",
+          "000"
+        ],
+        "consoles": 1,
+        "links": 0,
+        "victory": 0,
+        "allButtonsDisabled": true,
+        "scripts": 0,
+        "fontReady": "loaded"
+      },
+      "layouts": [
+        {
+          "width": 320,
+          "scrollWidth": 320,
+          "height": 740,
+          "consoleWidth": 288
+        },
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "height": 844,
+          "consoleWidth": 358
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "height": 1024,
+          "consoleWidth": 510
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "height": 900,
+          "consoleWidth": 510
+        }
+      ]
+    },
+    {
+      "filename": "complete.html",
+      "content": {
+        "title": "口袋星期天 · 通关",
+        "tiles": [],
+        "stats": [
+          "048",
+          "018"
+        ],
+        "consoles": 1,
+        "links": 0,
+        "victory": 1,
+        "allButtonsDisabled": true,
+        "scripts": 0,
+        "fontReady": "loaded"
+      },
+      "layouts": [
+        {
+          "width": 320,
+          "scrollWidth": 320,
+          "height": 869,
+          "consoleWidth": 288
+        },
+        {
+          "width": 390,
+          "scrollWidth": 390,
+          "height": 844,
+          "consoleWidth": 358
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "height": 1024,
+          "consoleWidth": 510
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "height": 900,
+          "consoleWidth": 510
+        }
+      ]
+    }
+  ]
+}
