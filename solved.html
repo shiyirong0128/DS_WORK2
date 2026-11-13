@@ -39,7 +39,11 @@ body[data-interactive] .console-bottom button:not(:disabled):is(:active, .is-pre
   transform: translate(2px, 2px);
   box-shadow: none;
 }
-.board:focus, .win-title:focus { outline: none; }
+.board, .win-title { scroll-margin: 12px; }
+.board:focus-visible, .win-title:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 5px;
+}
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 svg { shape-rendering: crispEdges; }
 .stage {

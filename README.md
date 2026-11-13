@@ -1,6 +1,8 @@
 # 口袋星期天
 
-阶段：**06_受阻反馈优化**。沿用苔绿液晶、奶油色掌机、像素字体和水平中文标签，可直接离线游玩。
+阶段：**07_Skill审查与修复**。沿用苔绿液晶、奶油色掌机、像素字体和水平中文标签，可直接离线游玩。
+
+本轮安装并使用 web-design-guidelines 1.0.0，修复撤销、重开和通关时焦点不可见、短窗口中焦点落在屏幕外的问题。技能来源与固定版本、问题位置和影响、实测结果及遗留项见 [审查报告](reviews/07_Skill审查与修复/审查报告.md)。
 
 ## 直接开始
 
@@ -58,7 +60,7 @@ WASD、方向键和鼠标按钮使用同一反馈。连续受阻最多每 0.45 �
 | `tests/game.test.mjs` | 游戏规则测试 |
 | `tests/blocked-feedback.mjs` | 受阻反馈、实际状态不变、限频和清理的浏览器检查，由截图脚本调用 |
 | `scripts/browser.mjs` / `scripts/capture.mjs` | 浏览器离线交互检查与截图 |
-| `validation.json` | 本轮浏览器检查结果 |
+| `validation.json` | 本轮检查摘要，详细 UI 实测记录与截图位于 reviews/07_Skill审查与修复/ |
 | `assets/fonts/` | VT323 像素字体及 SIL Open Font License |
 
 在完整仓库根目录运行（不需要 npm 安装）：

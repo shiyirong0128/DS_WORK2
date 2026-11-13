@@ -12,7 +12,7 @@ fs.mkdirSync(qa, { recursive: true });
 const browser = await startBrowser(path.join(qa, 'demo-profile'));
 const { call, evaluate, navigate } = browser;
 const url = file => pathToFileURL(path.join(root, file)).href;
-const report = { stage: '06_受阻反馈优化', offline: true, checks: [], layouts: [] };
+const report = { stage: '07_Skill审查与修复', offline: true, checks: [], layouts: [] };
 const passed = (name, detail = {}) => { report.checks.push({ name, ...detail }); console.log('PASS', name); };
 const size = async (width, height = 1000, mobile = false) => {
   await call('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile });

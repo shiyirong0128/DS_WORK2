@@ -1,0 +1,166 @@
+{
+  "stage": "07_Skill审查与修复",
+  "browser": "Codex in-app browser; live UI actions",
+  "focusBefore": {
+    "viewport": [
+      844,
+      390
+    ],
+    "top": -328.67,
+    "bottom": 7.33,
+    "outline": "none"
+  },
+  "focusAfter": {
+    "active": "board",
+    "bottom": 348,
+    "focusVisible": true,
+    "height": 390,
+    "outline": "solid",
+    "top": 12,
+    "width": "2.66667px"
+  },
+  "layouts": [
+    {
+      "boardBottom": 366.3333435058594,
+      "boardTop": 171.6666717529297,
+      "clientWidth": 305,
+      "height": 740,
+      "scrollHeight": 775,
+      "scrollWidth": 305,
+      "width": 320
+    },
+    {
+      "boardBottom": 466.1666717529297,
+      "boardTop": 217.5,
+      "clientWidth": 375,
+      "height": 844,
+      "scrollHeight": 844,
+      "scrollWidth": 375,
+      "width": 390
+    },
+    {
+      "boardBottom": 605.3333435058594,
+      "boardTop": 269.3333435058594,
+      "clientWidth": 768,
+      "height": 1024,
+      "scrollHeight": 1024,
+      "scrollWidth": 768,
+      "width": 768
+    },
+    {
+      "boardBottom": 374.6666679382324,
+      "boardTop": 38.66666793823242,
+      "clientWidth": 1351,
+      "height": 768,
+      "scrollHeight": 973,
+      "scrollWidth": 1351,
+      "width": 1366
+    },
+    {
+      "boardBottom": 348,
+      "boardTop": 12,
+      "clientWidth": 829,
+      "height": 390,
+      "scrollHeight": 973,
+      "scrollWidth": 829,
+      "width": 844
+    }
+  ],
+  "checks": [
+    {
+      "name": "Tab navigation / disabled undo skipped / focus visible",
+      "result": [
+        {
+          "bottom": 210,
+          "height": 390,
+          "name": "向上",
+          "outline": "solid",
+          "top": 180,
+          "visible": true
+        },
+        {
+          "bottom": 240,
+          "height": 390,
+          "name": "向左",
+          "outline": "solid",
+          "top": 210,
+          "visible": true
+        },
+        {
+          "bottom": 240,
+          "height": 390,
+          "name": "向右",
+          "outline": "solid",
+          "top": 210,
+          "visible": true
+        },
+        {
+          "bottom": 270,
+          "height": 390,
+          "name": "向下",
+          "outline": "solid",
+          "top": 240,
+          "visible": true
+        },
+        {
+          "bottom": 251,
+          "height": 390,
+          "name": "重开",
+          "outline": "solid",
+          "top": 199,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "Wall / s key",
+      "stateUnchanged": true,
+      "feedback": {
+        "hidden": false,
+        "text": "Oops推不动了",
+        "transform": "matrix(1, 0, 0, 1, 0, 0)"
+      }
+    },
+    {
+      "name": "W keyboard and mouse up push; mouse undo and restart",
+      "passed": true
+    },
+    {
+      "name": "Adjacent crates blocked / mouse",
+      "stateUnchanged": true
+    },
+    {
+      "name": "Crate against wall / ArrowUp",
+      "stateUnchanged": true
+    },
+    {
+      "name": "Real 28 move / 7 push win and result focus in short window",
+      "bottom": 342.3333435058594,
+      "disabled": true,
+      "focused": "result-title",
+      "height": 390,
+      "moves": "028",
+      "outline": "solid",
+      "pushes": "007",
+      "shown": true,
+      "title": "好耶，全部归位！",
+      "top": 303.3333435058594
+    },
+    {
+      "name": "Result / board focus round trip, win undo and play again",
+      "passed": true,
+      "boardFocus": {
+        "bottom": 348,
+        "focused": "board",
+        "height": 390,
+        "outline": "solid",
+        "top": 12
+      }
+    }
+  ],
+  "limitations": [
+    "Live browser allows HTTP(S) only; file:// opening was blocked by its URL policy. This round uses localhost UI verification, not a new direct-file offline browser run.",
+    "No real screen-reader or physical phone testing."
+  ],
+  "consoleErrors": []
+}

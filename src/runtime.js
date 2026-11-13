@@ -74,6 +74,11 @@ const setFragment = trail => {
   url.hash = trail ? 'result=' + trail : '';
   try { history.replaceState(null, '', url.href); } catch { /* In-memory results remain available. */ }
 };
+function focusRegion(element) {
+  element.focus({ preventScroll: true });
+  // Reveal the destination and its focus outline in short windows, without animated scrolling.
+  element.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+}
 
 function render() {
   clearBlockedFeedback();
@@ -119,7 +124,7 @@ function move(direction) {
   }
   const state = render();
   announce(`移动${state.moves}步，推动${state.pushes}次，已到位${state.placed}个。${state.won ? '恭喜通关！' : ''}`);
-  if (state.won) document.getElementById('result-title').focus({ preventScroll: true });
+  if (state.won) focusRegion(document.getElementById('result-title'));
 }
 
 function action(name) {
@@ -130,7 +135,7 @@ function action(name) {
     setFragment(null);
     const state = render();
     announce(`已撤销。移动${state.moves}步，推动${state.pushes}次。`);
-    boardElement.focus({ preventScroll: true });
+    focusRegion(boardElement);
   } else if (name === 'restart') {
     game.restart();
     view = 'game';
@@ -138,11 +143,11 @@ function action(name) {
     setFragment(null);
     render();
     announce('已重开，步数和推动次数归零。');
-    boardElement.focus({ preventScroll: true });
+    focusRegion(boardElement);
   } else if (game.snapshot().won && (name === 'board' || name === 'result')) {
     view = name === 'board' ? 'game' : 'result';
     render();
-    (view === 'game' ? boardElement : document.getElementById('result-title')).focus({ preventScroll: true });
+    focusRegion(view === 'game' ? boardElement : document.getElementById('result-title'));
   }
 }
 

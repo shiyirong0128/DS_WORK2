@@ -1,72 +1,17 @@
 {
-  "stage": "06_受阻反馈优化",
-  "offline": true,
-  "checks": [
-    {
-      "name": "WASD/arrows match mouse press appearance; release, key overlap, repeat and window blur event clear correctly"
-    },
-    {
-      "name": "wall, blocked crate and adjacent crates: WASD/arrows/mouse recoil in all four directions without changing positions, counts or layout"
-    },
-    {
-      "name": "held blocked key is rate-limited, at most one recoil runs, notice expires and no queued animation follows release",
-      "bursts": 3,
-      "minimumObservedGapMs": 462
-    },
-    {
-      "name": "valid move, undo, restart and blur cancel stale feedback; reduced-motion mode keeps the message without recoil"
-    },
-    {
-      "name": "320px blocked notice stays above the board and inside the screen"
-    },
-    {
-      "name": "keyboard and mouse: blocked wall and two-crate push do not count"
-    },
-    {
-      "name": "single pushes, keyboard/button undo and restart restore positions and statistics"
-    },
-    {
-      "name": "winning key releases its visual state immediately; disabled directions ignore keyboard and mouse press styling"
-    },
-    {
-      "name": "actual offline win: 28 moves / 7 pushes; undo can leave completion and win again"
-    },
-    {
-      "name": "result data is real: an alternate route reports 30 moves; reload and complete.html retain it"
-    },
-    {
-      "name": "storage disabled: game and result reload still work; invalid result trails show no fabricated scores"
-    },
-    {
-      "name": "320/390/768/1440 responsive widths and a real touchscreen tap (one tap = one move)"
-    },
-    {
-      "name": "standalone index.html copied to another folder completes offline"
-    },
-    {
-      "name": "historical state samples stay static; no browser errors or external runtime requests"
-    }
-  ],
-  "layouts": [
-    {
-      "width": 320,
-      "scrollWidth": 320,
-      "height": 792
-    },
-    {
-      "width": 390,
-      "scrollWidth": 390,
-      "height": 855
-    },
-    {
-      "width": 768,
-      "scrollWidth": 768,
-      "height": 1024
-    },
-    {
-      "width": 1440,
-      "scrollWidth": 1440,
-      "height": 1000
-    }
-  ]
+  "stage": "07_Skill审查与修复",
+  "rulesTests": {
+    "command": "node --test tests/game.test.mjs",
+    "passed": 10,
+    "failed": 0
+  },
+  "browserReport": "reviews/07_Skill审查与修复/browser-validation.json",
+  "review": "reviews/07_Skill审查与修复/审查报告.md",
+  "skillSource": "reviews/07_Skill审查与修复/skill-source.json",
+  "liveBrowserChecks": 7,
+  "viewportsTested": 5,
+  "directFileOfflineRetested": false,
+  "directFileLimit": "Browser URL policy allows HTTP(S) only; file:// was blocked. No bypass attempted.",
+  "embeddedAssetsVerified": true,
+  "captureHarnessRunThisStage": false
 }
